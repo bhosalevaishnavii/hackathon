@@ -1,21 +1,22 @@
 let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = "en-US";
 recognition.continuous = false;
-
-let time = 60;
-let timerInterval;
-
-
-function startListening() {
-    recognition.start();
-}
-
 
 recognition.onresult = function(event) {
     let transcript = event.results[0][0].transcript;
     document.getElementById("answer").value = transcript;
 };
 
+
+recognition.onend = function() {
+    console.log("Speech recognition ended.");
+};
+
+function startListening() {
+    document.getElementById("answer").value = ""; // optional: clear previous
+    recognition.start();
+}
 
 function speak(text) {
     let speech = new SpeechSynthesisUtterance(text);
