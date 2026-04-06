@@ -33,8 +33,10 @@ function startTimer() {
         document.getElementById("timer").innerText = time + "s";
 
         if (time <= 0) {
-            clearInterval(timerInterval);
-            analyzeAnswer();
+    clearInterval(timerInterval);
+    analyzeAnswer(true); 
+        }
+        
         }
     }, 1000);
 }
@@ -71,14 +73,20 @@ async function startInterview() {
 
 
 async function analyzeAnswer() {
+async function analyzeAnswer(isAuto = false) {
     clearInterval(timerInterval);
 
     let role = document.getElementById("role").value;
     let answer = document.getElementById("answer").value;
 
+    
     if (!answer) {
-        alert("Please provide an answer first!");
-        return;
+        if (isAuto) {
+            answer = "(No answer provided)"; // placeholder for auto-submit
+        } else {
+            alert("Please provide an answer first!");
+            return;
+        }
     }
 
     let prompt = `
