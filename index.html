@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HireReady AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1> HireReady AI Interview Coach</h1>
+
+    <select id="role">
+        <option>Frontend Developer</option>
+        <option>Backend Developer</option>
+        <option>Python Developer</option>
+        <option>Full Stack Developer</option>
+        <option>.NET Developer</option>
+        <option>HR Interview</option>
+    </select>
+
+    <button onclick="startInterview()">Start Interview</button>
+
+    <h2 id="questionBox">Question will appear here...</h2>
+
+    <button onclick="startListening()">Speak Answer</button>
+
+    <textarea id="answer" placeholder="Your answer..."></textarea>
+
+    <div id="timer">60s</div>
+
+    <button onclick="analyzeAnswer()">Submit Answer</button>
+
+    <div id="feedback"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+      </html>
