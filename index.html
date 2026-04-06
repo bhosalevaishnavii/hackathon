@@ -7,32 +7,55 @@
 <body>
 
 <div class="container">
-    <h1> HireReady AI Interview Coach</h1>
 
-    <select id="role">
-        <option>Frontend Developer</option>
-        <option>Backend Developer</option>
-        <option>Python Developer</option>
-        <option>Full Stack Developer</option>
-        <option>.NET Developer</option>
-        <option>HR Interview</option>
-    </select>
+    <h1> HireReady AI</h1>
+    <p class="subtitle">Your Personal AI Interview Coach</p>
 
-    <button onclick="startInterview()">Start Interview</button>
+    
+    <div class="section">
+        <label>Select Role:</label>
+        <select id="role">
+            <option>Frontend Developer</option>
+            <option>Backend Developer</option>
+            <option>Python Developer</option>
+            <option>Full Stack Developer</option>
+            <option>.NET Developer</option>
+            <option>HR Interview</option>
+        </select>
+    </div>
 
-    <h2 id="questionBox">Question will appear here...</h2>
+    
+    <button onclick="startInterview()">🎯 Start Interview</button>
 
-    <button onclick="startListening()">Speak Answer</button>
+    
+    <div class="section">
+        <h2>🧠 Interview Question</h2>
+        <p id="questionBox">Click "Start Interview" to begin...</p>
+    </div>
 
-    <textarea id="answer" placeholder="Your answer..."></textarea>
+    
+    <div id="loader" style="display:none;">⏳ AI is thinking...</div>
 
+    
+    <div class="section">
+        <button onclick="startListening()">🎤 Speak Answer</button>
+        <textarea id="answer" placeholder="Or type your answer here..."></textarea>
+    </div>
+
+    
     <div id="timer">60s</div>
 
-    <button onclick="analyzeAnswer()">Submit Answer</button>
+    
+    <button onclick="analyzeAnswer()">📊 Analyze Answer</button>
 
-    <div id="feedback"></div>
+    
+    <div class="section">
+        <h2>📋 AI Feedback</h2>
+        <div id="feedback">Your feedback will appear here...</div>
+    </div>
+
 </div>
 
 <script src="script.js"></script>
 </body>
-      </html>
+    </html>
