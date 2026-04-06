@@ -117,36 +117,34 @@ Communication:
 
 
 async function callAI(prompt) {
-
     const API_KEY = "AIzaSyD7UHcwUq9YslfL768GFhOL4pJZpQFamTY"; 
 
     try {
         document.getElementById("loader").style.display = "block";
 
         let response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5:generateText?key=${API_KEY}`,
             {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: prompt }]
-                    }]
+                    model: "gemini-1.5",
+                    prompt: prompt,
+                    temperature: 0.7,
+                    maxOutputTokens: 512
                 })
             }
         );
 
         let data = await response.json();
-
         document.getElementById("loader").style.display = "none";
 
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response from AI";
+        
+        return data?.candidates?.[0]?.output || "⚠️ No response from AI";
 
     } catch (error) {
         document.getElementById("loader").style.display = "none";
         console.error(error);
         return "❌ Error connecting to AI";
     }
-    }
+}
