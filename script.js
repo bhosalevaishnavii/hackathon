@@ -1,5 +1,4 @@
 let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = "en-US";
 recognition.continuous = false;
 
@@ -7,7 +6,6 @@ recognition.onresult = function(event) {
     let transcript = event.results[0][0].transcript;
     document.getElementById("answer").value = transcript;
 };
-
 
 recognition.onend = function() {
     console.log("Speech recognition ended.");
@@ -18,25 +16,30 @@ function startListening() {
     recognition.start();
 }
 
+
 function speak(text) {
     let speech = new SpeechSynthesisUtterance(text);
     speech.lang = "en-US";
     window.speechSynthesis.speak(speech);
 }
 
+
+let time = 60;
+let timerInterval;
+
 function startTimer() {
     time = 60;
     document.getElementById("timer").innerText = time + "s";
+    document.getElementById("analyzeBtn").disabled = true;
 
     timerInterval = setInterval(() => {
         time--;
         document.getElementById("timer").innerText = time + "s";
 
         if (time <= 0) {
-    clearInterval(timerInterval);
-    analyzeAnswer(true); 
-        }
-        
+            clearInterval(timerInterval);
+            document.getElementById("analyzeBtn").disabled = false;
+            analyzeAnswer(true); // true = auto-submit by timer
         }
     }, 1000);
 }
@@ -60,7 +63,6 @@ function typeText(element, text, speed = 15) {
 
 async function startInterview() {
     let role = document.getElementById("role").value;
-
     let prompt = `Generate one professional interview question for ${role}`;
 
     let question = await callAI(prompt);
@@ -71,18 +73,16 @@ async function startInterview() {
     startTimer();
 }
 
-
-async function analyzeAnswer() {
 async function analyzeAnswer(isAuto = false) {
     clearInterval(timerInterval);
+    document.getElementById("analyzeBtn").disabled = false;
 
     let role = document.getElementById("role").value;
     let answer = document.getElementById("answer").value;
 
-    
     if (!answer) {
         if (isAuto) {
-            answer = "(No answer provided)"; // placeholder for auto-submit
+            answer = "(No answer provided)";
         } else {
             alert("Please provide an answer first!");
             return;
@@ -124,9 +124,8 @@ Communication:
     typeText(document.getElementById("feedback"), feedback);
 }
 
-
 async function callAI(prompt) {
-    const API_KEY = "AIzaSyD7UHcwUq9YslfL768GFhOL4pJZpQFamTY"; 
+    const API_KEY = "AIzaSyD7UHcwUq9YslfL768GFhOL4pJZpQFamTY";
 
     try {
         document.getElementById("loader").style.display = "block";
@@ -148,7 +147,6 @@ async function callAI(prompt) {
         let data = await response.json();
         document.getElementById("loader").style.display = "none";
 
-        
         return data?.candidates?.[0]?.output || "⚠️ No response from AI";
 
     } catch (error) {
