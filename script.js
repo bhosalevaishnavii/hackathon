@@ -1,5 +1,6 @@
 let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = "en-US";
+recognition.continuous = false;
 
 let time = 60;
 let timerInterval;
@@ -8,6 +9,7 @@ let timerInterval;
 function startListening() {
     recognition.start();
 }
+
 
 recognition.onresult = function(event) {
     let transcript = event.results[0][0].transcript;
@@ -21,14 +23,15 @@ function speak(text) {
     window.speechSynthesis.speak(speech);
 }
 
-
 function startTimer() {
     time = 60;
-    timerInterval = setInterval(() => {
-        document.getElementById("timer").innerText = time + "s";
-        time--;
+    document.getElementById("timer").innerText = time + "s";
 
-        if (time < 0) {
+    timerInterval = setInterval(() => {
+        time--;
+        document.getElementById("timer").innerText = time + "s";
+
+        if (time <= 0) {
             clearInterval(timerInterval);
             analyzeAnswer();
         }
@@ -36,10 +39,26 @@ function startTimer() {
 }
 
 
+function typeText(element, text, speed = 15) {
+    element.innerHTML = "";
+    let i = 0;
+
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+
+    typing();
+}
+
+
 async function startInterview() {
     let role = document.getElementById("role").value;
 
-    let prompt = `Generate a professional interview question for ${role}`;
+    let prompt = `Generate one professional interview question for ${role}`;
 
     let question = await callAI(prompt);
 
@@ -56,45 +75,78 @@ async function analyzeAnswer() {
     let role = document.getElementById("role").value;
     let answer = document.getElementById("answer").value;
 
+    if (!answer) {
+        alert("Please provide an answer first!");
+        return;
+    }
+
     let prompt = `
-You are a professional interviewer.
+You are an expert interviewer.
 
-Evaluate this answer for the role: ${role}
+Evaluate the candidate strictly.
 
+Role: ${role}
 Answer: "${answer}"
 
-Give:
-1. Score out of 10
-2. Strengths
-3. Weaknesses
-4. Improved answer
-5. Is candidate fit for role (Yes/No)
-6. Communication feedback
+Respond in this format:
+
+Score: (out of 10)
+
+Strengths:
+- point 1
+- point 2
+
+Weaknesses:
+- point 1
+- point 2
+
+Improved Answer:
+(write a perfect answer)
+
+Final Verdict:
+(Fit / Not Fit)
+
+Communication:
+(brief feedback)
 `;
 
     let feedback = await callAI(prompt);
 
-    document.getElementById("feedback").innerText = feedback;
+    typeText(document.getElementById("feedback"), feedback);
 }
 
 
 async function callAI(prompt) {
 
-    const API_KEY = "YOUR_GEMINI_API_KEY"; 
+    const API_KEY = "AIzaSyD7UHcwUq9YslfL768GFhOL4pJZpQFamTY"; 
 
-    let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{ text: prompt }]
-            }]
-        })
-    });
+    try {
+        document.getElementById("loader").style.display = "block";
 
-    let data = await response.json();
+        let response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }]
+                })
+            }
+        );
 
-    return data.candidates[0].content.parts[0].text;
-      }
+        let data = await response.json();
+
+        document.getElementById("loader").style.display = "none";
+
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response from AI";
+
+    } catch (error) {
+        document.getElementById("loader").style.display = "none";
+        console.error(error);
+        return "❌ Error connecting to AI";
+    }
+    }
