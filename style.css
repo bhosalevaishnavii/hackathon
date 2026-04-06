@@ -45,11 +45,6 @@ button:hover {
     color: #facc15;
 }
 
-#feedback {
-    margin-top: 20px;
-    text-align: left;
-    white-space: pre-wrap;
-      }
 .subtitle {
     color: #94a3b8;
     margin-bottom: 20px;
@@ -70,8 +65,10 @@ label {
     padding: 15px;
     border-radius: 10px;
 }
-
 #feedback {
+    margin-top: 20px;
+    text-align: left;
+    white-space: pre-wrap;
     background: rgba(255,255,255,0.05);
     padding: 15px;
     border-radius: 10px;
